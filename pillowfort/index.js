@@ -127,7 +127,7 @@ class NewsArticle extends BaseAsset {
 
     _to_data() {
         return this.validate().then(() => {
-            return this._document.html();
+            return this._document.toString();
         });
     }
 
