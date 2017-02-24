@@ -31,20 +31,20 @@ function main() {
         const bio = $profile('[itemtype="http://schema.org/NewsArticle"]').first();
 
         const headshot_img = $profile('.profile-box picture img').first();
-        const headshot_job = pillowfort.util.simple_img_job(headshot_img, base_uri);
-        hatch.save_job(headshot_job);
+        const headshot_image = pillowfort.util.download_img(headshot_img, base_uri);
+        hatch.save_asset(headshot_image);
 
         const image_gallery = $profile('.Collage img').map(function() {
-            const job = pillowfort.util.simple_img_job(this, base_uri);
-            hatch.save_job(job);
-            return job;
+            const asset = pillowfort.util.download_img(this, base_uri);
+            hatch.save_asset(asset);
+            return asset;
         }).get();
 
         // Construct a new document containing the content we want.
         const template = (`
 <section class="title">
   <h1>{{ title }}</h1>
-  <img data-soma-job-id="{{headshot_job.asset_id}}">
+  <img data-pillowfort-asset-id="{{headshot_image.asset_id}}">
 </section>
 
 {{{ bio_html }}}
@@ -52,13 +52,13 @@ function main() {
 <section class="gallery">
   <h2>Gallery</h2>
   {{#image_gallery}}
-  <img data-soma-job-id="{{job_id}}">
+  <img data-pillowfort-asset-id="{{asset_id}}">
   {{/image_gallery}}
 </section>`);
 
         const content = mustache.render(template, {
             title: title,
-            headshot_job: headshot_job,
+            headshot_image: headshot_image,
             image_gallery: image_gallery,
             bio_html: bio.html(),
         });

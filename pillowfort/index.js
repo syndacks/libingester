@@ -16,7 +16,7 @@ function write_file_but_with_a_promise(path, data) {
 }
 
 function new_asset_id() {
-    const hash = crypto.createHash('sha1');
+    var hash = crypto.createHash('sha1');
     hash.update(crypto.randomBytes(32));
     return hash.digest('hex');
 }
@@ -63,7 +63,7 @@ class BaseAsset {
         return this._wait().then(() => {
             return Promise.all([this._to_data(), this._to_metadata()]);
         }).then(([data, metadata]) => {
-            const metadata_text = JSON.stringify(metadata, null, 2);
+            let metadata_text = JSON.stringify(metadata, null, 2);
             return Promise.all([
                 write_file_but_with_a_promise(path.join(hatch_path, `${this._asset_id}.data`), data),
                 write_file_but_with_a_promise(path.join(hatch_path, `${this._asset_id}.metadata`), metadata_text),
@@ -143,7 +143,7 @@ class NewsArticle extends BaseAsset {
 exports.NewsArticle = NewsArticle;
 
 function is_subset(a, b) {
-    for (const item of a)
+    for (let item of a)
         if (!b.has(item))
             return false;
 
@@ -153,10 +153,8 @@ function is_subset(a, b) {
 class Hatch {
     constructor() {
         this._promises = [];
-        this._path = fs.mkdtempSync('hatch_');
-
         this._assets = [];
-        this._jobs = [];
+        this._hatch = fs.mkdtempSync('hatch_');
     }
 
     _validate_asset_references() {
@@ -170,13 +168,8 @@ class Hatch {
 
         this._assets.forEach((asset) => {
             asset_ids.add(asset.asset_id);
-            for (const outgoing_asset_id of asset._get_outgoing_asset_ids())
+            for (let outgoing_asset_id of asset._get_outgoing_asset_ids())
                 outgoing.add(outgoing_asset_id);
-        });
-
-        this._jobs.forEach((job) => {
-            // This looks a bit funky, but asset_id and job_id are synonymous.
-            asset_ids.add(job.job_id);
         });
 
         // Assert that outgoing edges is contained in asset_ids.
@@ -184,38 +177,19 @@ class Hatch {
             throw new ValidationError("Asset references inconsistent");
     }
 
-    _save_hatch_manifest() {
-        const assets = this._assets.map((asset) => {
-            return asset.asset_id;
-        });
-        const jobs = this._jobs.map((job) => {
-            return job._to_hatch_manifest();
-        });
-
-        const manifest = { assets: assets, jobs: jobs };
-        const manifest_str = JSON.stringify(manifest, null, 2);
-        return write_file_but_with_a_promise(path.join(this._path, 'hatch_manifest.json'), manifest_str);
-    }
-
     finish() {
         return Promise.all(this._promises).then(() => {
             return this._validate_asset_references();
-        }).then(() => {
-            return this._save_hatch_manifest();
         });
-    }
-
-    save_job(job) {
-        this._jobs.push(job);
     }
 
     save_asset(asset) {
         this._assets.push(asset);
-        this._promises.push(asset._save_to_hatch(this._path));
+        this._promises.push(asset._save_to_hatch(this._hatch));
     }
 }
 
 exports.Hatch = Hatch;
 
-exports.job = require('./job');
 exports.util = require('./util');
+
