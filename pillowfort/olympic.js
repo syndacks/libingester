@@ -8,7 +8,9 @@ function main() {
 
     const uri = 'https://www.olympic.org/michael-phelps';
 
-    pillowfort.fetch_html(uri).then(($profile) => {
+    pillowfort.util.fetch_html(uri).then(($profile) => {
+        const base_uri = pillowfort.util.get_doc_base_uri($profile, uri);
+
         const asset = new pillowfort.NewsArticle();
         asset.set_canonical_uri(uri);
 
@@ -29,11 +31,11 @@ function main() {
         const bio = $profile('[itemtype="http://schema.org/NewsArticle"]').first();
 
         const headshot_img = $profile('.profile-box picture img').first();
-        const headshot_image = pillowfort.download_img(headshot_img);
+        const headshot_image = pillowfort.util.download_img(headshot_img, base_uri);
         hatch.save_asset(headshot_image);
 
         const image_gallery = $profile('.Collage img').map(function() {
-            const asset = pillowfort.download_img(this);
+            const asset = pillowfort.util.download_img(this, base_uri);
             hatch.save_asset(asset);
             return asset;
         }).get();

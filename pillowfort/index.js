@@ -4,9 +4,7 @@ const cheerio = require('cheerio');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const rp = require('request-promise');
 const verify = require('./verify');
-const url = require('url');
 
 function write_file_but_with_a_promise(path, data) {
     return new Promise((resolve, reject) => {
@@ -40,7 +38,7 @@ class BaseAsset {
     set_license(value) { this._license = value; }
 
     _to_metadata() {
-        return Promise.accept({
+        return Promise.resolve({
             "assetID": this._asset_id,
             "objectType": this._object_type,
             "contentType": this._content_type,
@@ -59,7 +57,7 @@ class BaseAsset {
         });
     }
 
-    _wait() { return Promise.accept(); }
+    _wait() { return Promise.resolve(); }
 
     _save_to_hatch(hatch_path) {
         return this._wait().then(() => {
@@ -80,78 +78,20 @@ class ImageAsset extends BaseAsset {
         this._object_type = "ImageObject";
     }
 
-    set_image_data(value) { this._image_data = value; }
+    set_image_data(content_type, image_data) {
+        this._content_type = content_type;
+        this._image_data = image_data;
+    }
 
     _make_tags() { return []; }
 
     // Allow setting image_data to a Promise... probably a bad idea.
-    _wait() { return this._image_data; }
+    _wait() { return Promise.resolve(this._image_data); }
 
-    _to_data() { return this._image_data; }
+    _to_data() { return Promise.resolve(this._image_data); }
 }
 
 exports.ImageAsset = ImageAsset;
-
-function download_image(uri) {
-    const promise = rp(uri).then((res) => {
-        // XXX: pull this from headers
-        asset._content_type = "image/jpeg";
-        asset.set_image_data(res);
-    });
-
-    const asset = new ImageAsset();
-    asset.set_canonical_uri(uri);
-    asset.set_last_modified_date(new Date());
-    asset.set_image_data(promise);
-    return asset;
-}
-
-function node_root(node) {
-    while (node.parent)
-        node = node.parent;
-    return node.root;
-}
-
-function parse_img_src(p) {
-    const $img = cheerio(p);
-    const img = $img.get(0);
-
-    // Trick set in fetch_html.
-    const root_node = node_root(img);
-    const base_uri = root_node.$pillowfort_base_uri;
-
-    const src = $img.attr('src');
-    if (src)
-        return url.resolve(base_uri, src);
-
-    const srcset = $img.attr('srcset');
-    if (srcset) {
-        const first_decl = srcset.split(',')[0];
-        const first_uri = first_decl.split(/\s+/)[0];
-        return url.resolve(base_uri, first_uri);
-    }
-
-    throw new Error("Could not parse img tag's src");
-}
-
-function download_img(img) {
-    const $img = cheerio(img);
-
-    if ($img.attr('data-pillowfort-asset-id'))
-        throw new ValidationError("img already has associated ImageAsset");
-
-    const src = parse_img_src($img);
-
-    // Knock these out.
-    $img.attr('src', null);
-    $img.attr('srcset', null);
-
-    const asset = download_image(src);
-    $img.attr('data-pillowfort-asset-id', asset.asset_id);
-    return asset;
-}
-
-exports.download_img = download_img;
 
 class NewsArticle extends BaseAsset {
     constructor() {
@@ -164,7 +104,7 @@ class NewsArticle extends BaseAsset {
     set_section(value) { this._section = value; }
 
     validate() {
-        return Promise.accept().then(() => {
+        return Promise.resolve().then(() => {
             const $elem = this._document;
 
             $elem.find('img, video, audio').each(function() {
@@ -194,16 +134,6 @@ class NewsArticle extends BaseAsset {
 
 exports.NewsArticle = NewsArticle;
 
-function fetch_html(uri) {
-    return rp(uri).then((res) => {
-        const $doc = cheerio.load(res);
-        $doc._root.$pillowfort_base_uri = uri;
-        return $doc;
-    });
-}
-
-exports.fetch_html = fetch_html;
-
 class Hatch {
     constructor() {
         this._promises = [];
@@ -220,3 +150,6 @@ class Hatch {
 }
 
 exports.Hatch = Hatch;
+
+exports.util = require('./util');
+

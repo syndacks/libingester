@@ -16,9 +16,9 @@ function verify_metadata(metadata) {
     assert(!!metadata['contentType'], "metadata missing contentType");
 
     if (object_type === 'ArticleObject') {
+        // XXX: This should be really attached to stuff that can show up in sets / search
         assert(!!metadata['title'], "metadata missing title");
     } else if (object_type === 'ImageObject') {
-        //
     } else {
         throw new VerificationError("metadata has wrong objectType");
     }
