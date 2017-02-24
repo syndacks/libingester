@@ -38,6 +38,22 @@ function get_img_src($img, base_uri) {
     throw new Error("Could not parse img tag's src");
 }
 
+function simple_img_job(img, base_uri) {
+    const $img = cheerio(img);
+
+    const src = get_img_src($img, base_uri);
+
+    // Knock these out.
+    $img.attr('src', null);
+    $img.attr('srcset', null);
+
+    const job = new pillowfort.job.SimpleImageJob(src);
+    $img.attr('data-soma-job-id', job.job_id);
+    return job;
+}
+
+exports.simple_img_job = simple_img_job;
+
 function download_img(img, base_uri) {
     const $img = cheerio(img);
 
