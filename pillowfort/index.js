@@ -89,6 +89,8 @@ class ImageAsset extends BaseAsset {
     _wait() { return Promise.resolve(this._image_data); }
 
     _to_data() { return Promise.resolve(this._image_data); }
+
+    _get_outgoing_asset_ids() { return []; }
 }
 
 exports.ImageAsset = ImageAsset;
@@ -130,21 +132,59 @@ class NewsArticle extends BaseAsset {
     }
 
     _make_tags() { return [ this._section ]; }
+
+    _get_outgoing_asset_ids() {
+        return this._document.find('[data-soma-job-id]').map(function() {
+            return cheerio(this).attr('data-soma-job-id');
+        }).get();
+    }
 }
 
 exports.NewsArticle = NewsArticle;
 
+function is_subset(a, b) {
+    for (let item of a)
+        if (!b.has(item))
+            return false;
+
+    return true;
+}
+
 class Hatch {
     constructor() {
         this._promises = [];
+        this._assets = [];
         this._hatch = fs.mkdtempSync('hatch_');
     }
 
+    _validate_asset_references() {
+        // Assure that all outgoing edges are satisfied.
+
+        // Outgoing edges.
+        const outgoing = new Set();
+
+        // Node labels
+        const asset_ids = new Set();
+
+        this._assets.forEach((asset) => {
+            asset_ids.add(asset.asset_id);
+            for (let outgoing_asset_id of asset._get_outgoing_asset_ids())
+                outgoing.add(outgoing_asset_id);
+        });
+
+        // Assert that outgoing edges is contained in asset_ids.
+        if (!is_subset(outgoing, asset_ids))
+            throw new ValidationError("Asset references inconsistent");
+    }
+
     finish() {
-        return Promise.all(this._promises);
+        return Promise.all(this._promises).then(() => {
+            return this._validate_asset_references();
+        });
     }
 
     save_asset(asset) {
+        this._assets.push(asset);
         this._promises.push(asset._save_to_hatch(this._hatch));
     }
 }

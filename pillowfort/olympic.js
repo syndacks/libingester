@@ -8,7 +8,7 @@ function main() {
 
     const uri = 'https://www.olympic.org/michael-phelps';
 
-    pillowfort.util.fetch_html(uri).then(($profile) => {
+    return pillowfort.util.fetch_html(uri).then(($profile) => {
         const base_uri = pillowfort.util.get_doc_base_uri($profile, uri);
 
         const asset = new pillowfort.NewsArticle();
@@ -66,6 +66,7 @@ function main() {
         asset.set_document(content);
 
         hatch.save_asset(asset);
+        return hatch.finish();
     });
 }
 
