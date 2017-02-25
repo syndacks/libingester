@@ -37,6 +37,8 @@ class BaseAsset {
     set_last_modified_date(value) { this._last_modified_date = value; }
     set_license(value) { this._license = value; }
 
+    _to_data() { return null; }
+
     _to_metadata() {
         return Promise.resolve({
             "assetID": this._asset_id,
@@ -51,9 +53,6 @@ class BaseAsset {
             "tags": this._make_tags(),
             "lastModifiedDate": this._last_modified_date.toJSON(),
             "revisionTag": this._last_modified_date.toJSON(),
-        }).then((metadata) => {
-            verify.verify_metadata(metadata);
-            return metadata;
         });
     }
 
@@ -63,11 +62,20 @@ class BaseAsset {
         return this._wait().then(() => {
             return Promise.all([this._to_data(), this._to_metadata()]);
         }).then(([data, metadata]) => {
+            if (data)
+                metadata['cdnFilename'] = `${metadata['assetID']}.data`;
+
+            verify.verify_metadata(metadata);
+
             let metadata_text = JSON.stringify(metadata, null, 2);
-            return Promise.all([
-                write_file_but_with_a_promise(path.join(hatch_path, `${this._asset_id}.data`), data),
-                write_file_but_with_a_promise(path.join(hatch_path, `${this._asset_id}.metadata`), metadata_text),
-            ]);
+            let promises = [];
+
+            promises.push(write_file_but_with_a_promise(path.join(hatch_path, `${this._asset_id}.metadata`), metadata_text));
+
+            if (data)
+                promises.push(write_file_but_with_a_promise(path.join(hatch_path, `${this._asset_id}.data`), data));
+
+            return Promise.all(promises);
         });
     }
 };
@@ -125,9 +133,10 @@ class NewsArticle extends BaseAsset {
         });
     }
 
-    _to_data() {
-        return this.validate().then(() => {
-            return this._document.toString();
+    _to_metadata() {
+        return super._to_metadata().then((metadata) => {
+            metadata['document'] = this._document.toString();
+            return metadata;
         });
     }
 
@@ -154,7 +163,7 @@ class Hatch {
     constructor() {
         this._promises = [];
         this._assets = [];
-        this._hatch = fs.mkdtempSync('hatch_');
+        this._path = fs.mkdtempSync('hatch_');
     }
 
     _validate_asset_references() {
@@ -177,15 +186,27 @@ class Hatch {
             throw new ValidationError("Asset references inconsistent");
     }
 
+    _save_hatch_manifest() {
+        const assets = this._assets.map((asset) => {
+            return asset.asset_id;
+        });
+
+        const manifest = { assets: assets };
+        const manifest_str = JSON.stringify(manifest, null, 2);
+        return write_file_but_with_a_promise(path.join(this._path, 'hatch_manifest.json'), manifest_str);
+    }
+
     finish() {
         return Promise.all(this._promises).then(() => {
             return this._validate_asset_references();
+        }).then(() => {
+            return this._save_hatch_manifest();
         });
     }
 
     save_asset(asset) {
         this._assets.push(asset);
-        this._promises.push(asset._save_to_hatch(this._hatch));
+        this._promises.push(asset._save_to_hatch(this._path));
     }
 }
 
