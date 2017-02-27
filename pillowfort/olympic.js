@@ -1,13 +1,11 @@
 'use strict';
 
 const mustache = require('mustache');
+const rp = require('request-promise');
+const url = require('url');
 const pillowfort = require('./index');
 
-function main() {
-    const hatch = new pillowfort.Hatch();
-
-    const uri = 'https://www.olympic.org/michael-phelps';
-
+function ingest_profile(hatch, uri) {
     return pillowfort.util.fetch_html(uri).then(($profile) => {
         const base_uri = pillowfort.util.get_doc_base_uri($profile, uri);
 
@@ -66,6 +64,18 @@ function main() {
         asset.set_document(content);
 
         hatch.save_asset(asset);
+    });
+}
+
+function main() {
+    const hatch = new pillowfort.Hatch();
+
+    const base_uri = 'https://www.olympic.org/';
+    const profiles_list = 'https://www.olympic.org/ajaxscript/loadmoretablelist/games/athletes/%7BA5FEFBC6-8FF7-4B0A-A96A-EB7943EA4E2F%7D/100/0';
+    rp({ uri: profiles_list, json: true }).then((response) => {
+        const profile_uris = response.content.map((datum) => url.resolve(base_uri, datum.urlName));
+        return Promise.all(profile_uris.map((uri) => ingest_profile(hatch, uri)));
+    }).then(() => {
         return hatch.finish();
     });
 }
