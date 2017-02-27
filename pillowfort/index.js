@@ -56,10 +56,10 @@ class BaseAsset {
         };
     }
 
-    _wait() { return Promise.resolve(); }
+    _process() { return Promise.resolve(); }
 
     _save_to_hatch(hatch_path) {
-        return this._wait().then(() => {
+        return this._process().then(() => {
             const data = this._to_data();
             const metadata = this._to_metadata();
 
@@ -95,7 +95,7 @@ class ImageAsset extends BaseAsset {
     _make_tags() { return []; }
 
     // Allow setting image_data to a Promise... probably a bad idea.
-    _wait() { return Promise.resolve(this._image_data); }
+    _process() { return Promise.resolve(this._image_data); }
 
     _to_data() { return this._image_data; }
 
@@ -114,7 +114,7 @@ class NewsArticle extends BaseAsset {
     set_document(value) { this._document = cheerio(value); }
     set_section(value) { this._section = value; }
 
-    validate() {
+    _process() {
         return Promise.resolve().then(() => {
             const $elem = this._document;
 
