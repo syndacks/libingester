@@ -44,7 +44,7 @@ function download_image(uri) {
     asset.set_canonical_uri(uri);
     asset.set_last_modified_date(new Date());
 
-    const promise = rp({ uri: uri, resolveWithFullResponse: true }).then((response) => {
+    const promise = rp({ uri: uri, encoding: null, resolveWithFullResponse: true }).then((response) => {
         asset.set_image_data(response.headers['content-type'], response.body);
     });
 
