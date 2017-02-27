@@ -27,6 +27,11 @@ function ingest_profile(hatch, uri) {
 
         // Pull out the biography.
         const bio = $profile('[itemtype="http://schema.org/NewsArticle"]').first();
+        bio.find('.btn-more').remove();
+
+        // XXX: Cheerio doesn't support .unwrap(), see https://github.com/cheeriojs/cheerio/pull/851/files
+        const bio_extra_content = bio.find('.extraContent');
+        bio_extra_content.replaceWith($profile.html(bio_extra_content.get(0).children));
 
         const headshot_img = $profile('.profile-box picture img').first();
         const headshot_image = pillowfort.util.download_img(headshot_img, base_uri);
