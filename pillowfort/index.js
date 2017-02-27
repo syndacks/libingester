@@ -40,7 +40,7 @@ class BaseAsset {
     _to_data() { return null; }
 
     _to_metadata() {
-        return Promise.resolve({
+        return {
             "assetID": this._asset_id,
             "objectType": this._object_type,
             "contentType": this._content_type,
@@ -53,15 +53,16 @@ class BaseAsset {
             "tags": this._make_tags(),
             "lastModifiedDate": this._last_modified_date.toJSON(),
             "revisionTag": this._last_modified_date.toJSON(),
-        });
+        };
     }
 
     _wait() { return Promise.resolve(); }
 
     _save_to_hatch(hatch_path) {
         return this._wait().then(() => {
-            return Promise.all([this._to_data(), this._to_metadata()]);
-        }).then(([data, metadata]) => {
+            const data = this._to_data();
+            const metadata = this._to_metadata();
+
             if (data)
                 metadata['cdnFilename'] = `${metadata['assetID']}.data`;
 
@@ -96,7 +97,7 @@ class ImageAsset extends BaseAsset {
     // Allow setting image_data to a Promise... probably a bad idea.
     _wait() { return Promise.resolve(this._image_data); }
 
-    _to_data() { return Promise.resolve(this._image_data); }
+    _to_data() { return this._image_data; }
 
     _get_outgoing_asset_ids() { return []; }
 }
@@ -134,10 +135,9 @@ class NewsArticle extends BaseAsset {
     }
 
     _to_metadata() {
-        return super._to_metadata().then((metadata) => {
-            metadata['document'] = this._document.toString();
-            return metadata;
-        });
+        const metadata = super._to_metadata();
+        metadata['document'] = this._document.toString();
+        return metadata;
     }
 
     _make_tags() { return [ this._section ]; }
