@@ -78,7 +78,7 @@ class BaseAsset {
             return Promise.all(promises);
         });
     }
-};
+}
 
 class ImageAsset extends BaseAsset {
     constructor() {

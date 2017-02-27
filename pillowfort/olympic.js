@@ -1,5 +1,5 @@
+'use strict';
 
-const cheerio = require('cheerio');
 const mustache = require('mustache');
 const pillowfort = require('./index');
 

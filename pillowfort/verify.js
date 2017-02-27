@@ -1,3 +1,4 @@
+'use strict';
 
 class VerificationError extends Error {
 }

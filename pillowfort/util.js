@@ -1,3 +1,4 @@
+'use strict';
 
 const cheerio = require('cheerio');
 const pillowfort = require('./index');
@@ -38,11 +39,26 @@ function get_img_src($img, base_uri) {
     throw new Error("Could not parse img tag's src");
 }
 
+function download_image(uri) {
+    const asset = new pillowfort.ImageAsset();
+    asset.set_canonical_uri(uri);
+    asset.set_last_modified_date(new Date());
+
+    const promise = rp({ method: "GET", uri: uri, resolveWithFullResponse: true }).then((response) => {
+        asset.set_image_data(response.headers['content-type'], response.body);
+    });
+
+    asset.set_image_data(undefined, promise);
+    return asset;
+}
+
+exports.download_image = download_image;
+
 function download_img(img, base_uri) {
     const $img = cheerio(img);
 
     if ($img.attr('data-pillowfort-asset-id'))
-        throw new ValidationError("img already has associated ImageAsset");
+        throw new Error("img already has associated ImageAsset");
 
     const src = get_img_src($img, base_uri);
 
@@ -56,17 +72,3 @@ function download_img(img, base_uri) {
 }
 
 exports.download_img = download_img;
-
-function download_image(uri) {
-    const promise = rp({ method: "GET", uri: uri, resolveWithFullResponse: true }).then((response) => {
-        asset.set_image_data(response.headers['content-type'], response.body);
-    });
-
-    const asset = new pillowfort.ImageAsset();
-    asset.set_canonical_uri(uri);
-    asset.set_last_modified_date(new Date());
-    asset.set_image_data(undefined, promise);
-    return asset;
-}
-
-exports.download_image = download_image;
