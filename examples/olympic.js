@@ -3,13 +3,13 @@
 const mustache = require('mustache');
 const rp = require('request-promise');
 const url = require('url');
-const pillowfort = require('./index');
+const libingester = require('libingester');
 
 function ingest_profile(hatch, uri) {
-    return pillowfort.util.fetch_html(uri).then(($profile) => {
-        const base_uri = pillowfort.util.get_doc_base_uri($profile, uri);
+    return libingester.util.fetch_html(uri).then(($profile) => {
+        const base_uri = libingester.util.get_doc_base_uri($profile, uri);
 
-        const asset = new pillowfort.NewsArticle();
+        const asset = new libingester.NewsArticle();
         asset.set_canonical_uri(uri);
 
         // Pull out the last-modified date.
@@ -34,11 +34,11 @@ function ingest_profile(hatch, uri) {
         bio_extra_content.replaceWith($profile.html(bio_extra_content.get(0).children));
 
         const headshot_img = $profile('.profile-box picture img').first();
-        const headshot_image = pillowfort.util.download_img(headshot_img, base_uri);
+        const headshot_image = libingester.util.download_img(headshot_img, base_uri);
         hatch.save_asset(headshot_image);
 
         const image_gallery = $profile('.Collage img').map(function() {
-            const asset = pillowfort.util.download_img(this, base_uri);
+            const asset = libingester.util.download_img(this, base_uri);
             hatch.save_asset(asset);
             return asset;
         }).get();
@@ -47,7 +47,7 @@ function ingest_profile(hatch, uri) {
         const template = (`
 <section class="title">
   <h1>{{ title }}</h1>
-  <img data-pillowfort-asset-id="{{headshot_image.asset_id}}">
+  <img data-libingester-asset-id="{{headshot_image.asset_id}}">
 </section>
 
 {{{ bio_html }}}
@@ -55,7 +55,7 @@ function ingest_profile(hatch, uri) {
 <section class="gallery">
   <h2>Gallery</h2>
   {{#image_gallery}}
-  <img data-pillowfort-asset-id="{{asset_id}}">
+  <img data-libingester-asset-id="{{asset_id}}">
   {{/image_gallery}}
 </section>`);
 
@@ -73,7 +73,7 @@ function ingest_profile(hatch, uri) {
 }
 
 function main() {
-    const hatch = new pillowfort.Hatch();
+    const hatch = new libingester.Hatch();
 
     const base_uri = 'https://www.olympic.org/';
     const profiles_list = 'https://www.olympic.org/ajaxscript/loadmoretablelist/games/athletes/%7BA5FEFBC6-8FF7-4B0A-A96A-EB7943EA4E2F%7D/100/0';
