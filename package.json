@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "license": "UNLICENSED",
   "dependencies": {
+    "aws-sdk": "^2.23.0",
     "cheerio": "^0.22.0",
+    "fs-extra": "^2.0.0",
     "jest": "^19.0.2",
     "request": "^2.79.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "thenify-all": "^1.6.0"
   }
 }
