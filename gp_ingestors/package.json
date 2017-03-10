@@ -1,0 +1,12 @@
+{
+  "name": "ingester-siglo21",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "libingester": "file:../",
+    "mustache": "^2.3.0",
+    "request": "^2.80.0",
+    "request-promise": "^4.1.1",
+    "rss-to-json" : "^1.0.2"
+  }
+}
