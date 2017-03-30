@@ -73,7 +73,7 @@ function ingest_profile(hatch, uri) {
 }
 
 function main() {
-    const hatch = new libingester.Hatch();
+    const hatch = new libingester.Hatch('olympic');
 
     const base_uri = 'https://www.olympic.org/';
     const profiles_list = 'https://www.olympic.org/ajaxscript/loadmoretablelist/games/athletes/%7BA5FEFBC6-8FF7-4B0A-A96A-EB7943EA4E2F%7D/100/0';
