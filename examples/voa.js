@@ -39,7 +39,7 @@ function ingest_video(hatch, uri) {
 }
 
 function main() {
-    const hatch = new libingester.Hatch();
+    const hatch = new libingester.Hatch('voa');
 
     // Undocumented feature: if you pass an invalid page it returns all videos.
     const videos_list = 'http://learningenglish.voanews.com/z/4729?p=999';
