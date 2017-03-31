@@ -4,6 +4,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "aws-sdk": "^2.23.0",
+    "bootstrap": "^4.0.0-alpha.6",
     "cheerio": "^0.22.0",
     "electron": "^1.4.1",
     "fs-extra": "^2.0.0",
