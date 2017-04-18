@@ -1,6 +1,8 @@
 'use strict';
 
-const libingester = require('./index');
+const expect = require('chai').expect;
+
+const libingester = require('../../lib/index');
 
 describe('ImageAsset', function() {
     it('can serialize out correctly', function() {
@@ -8,7 +10,7 @@ describe('ImageAsset', function() {
         asset.set_title('Test Asset');
         asset.set_license('Proprietary');
         asset.set_canonical_uri('https://www.example.com/');
-        asset.set_last_modified_date(new Date(2017, 2, 31));
+        asset.set_last_modified_date(new Date(1492545280000));
         asset.set_image_data('image/jpeg', 'asdf');
 
         const metadata = asset._to_metadata();
@@ -17,7 +19,7 @@ describe('ImageAsset', function() {
         // figure out how to use it.
         delete metadata['assetID'];
 
-        expect(metadata).toEqual({
+        expect(metadata).to.deep.equal({
             "objectType": 'ImageObject',
             "contentType": 'image/jpeg',
 
@@ -27,11 +29,11 @@ describe('ImageAsset', function() {
             "title": 'Test Asset',
             "license": 'Proprietary',
             "tags": [],
-            "lastModifiedDate": '2017-03-31T07:00:00.000Z',
-            "revisionTag": '2017-03-31T07:00:00.000Z',
+            "lastModifiedDate": '2017-04-18T19:54:40.000Z',
+            "revisionTag": '2017-04-18T19:54:40.000Z',
         });
 
         const data = asset._to_data();
-        expect(data).toEqual('asdf');
+        expect(data).to.equal('asdf');
     });
 });
