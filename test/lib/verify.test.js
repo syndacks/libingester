@@ -1,6 +1,8 @@
 'use strict';
 
-const verify = require('./verify');
+const expect = require('chai').expect;
+
+const verify = require('../../lib/verify');
 
 const basic_metadata = {
     "assetID": "03d9d97e112b3b4513d246bda42c853656f200e8",
@@ -18,20 +20,20 @@ const basic_metadata = {
 
 describe('verify', function() {
     it('passes real metadata correctly', function() {
-        expect(() => (verify.verify_metadata(basic_metadata))).not.toThrow();
+        expect(() => verify.verify_metadata(basic_metadata)).not.to.throw();
     });
 
     it('fails fake metadata', function() {
-        expect(() => (verify.verify_metadata({}))).toThrow();
+        expect(() => verify.verify_metadata({})).to.throw();
     });
 
     it('tests asset IDs correctly', function() {
         const fake_id_metadata = Object.assign({}, basic_metadata, { "assetID": "12345" });
-        expect(() => (verify.verify_metadata(fake_id_metadata))).toThrow();
+        expect(() => verify.verify_metadata(fake_id_metadata)).to.throw();
     });
 
     it('tests tags correctly', function() {
         const bad_tags_metadata = Object.assign({}, basic_metadata, { "tags": [ ["A", "B"] ] });
-        expect(() => (verify.verify_metadata(fake_id_metadata))).toThrow();
+        expect(() => verify.verify_metadata(fake_id_metadata)).to.throw();
     });
 });
