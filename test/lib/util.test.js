@@ -44,50 +44,62 @@ describe('download_image', function() {
         const asset = util.download_img(image_tag, '');
         expect(asset.asset_id).is.not.null;
         expect(asset.asset_id).is.not.undefined;
-        expect(asset._image_data).is.not.null;
+        expect(asset.to_data()).is.not.null;
     });
 
     describe('data urls', function() {
         it('can handle png urls correctly', function() {
-            let imageUrl = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png.txt');
-            let image = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png');
+            const imageUrlFile = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png.txt');
+            const image = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png');
+            const imageSha256Hash = 'e7f555cc474b1d12a52cb9b9fa012a3502e8a2d972e19d49a898629937ac13ca'
 
             // We want this as a string
-            imageUrl = imageUrl.toString();
+            let imageUrl = imageUrlFile.toString();
 
             if (imageUrl == undefined || imageUrl.length <= 0 ||
                 image == undefined || image.length <= 0) {
               throw new Error("Invalid data loaded from test image");
             }
 
-            let image_tag = "<img src=" + imageUrl + ">test</img>";
+            const imageTag = "<img src=" + imageUrl + ">test</img>";
 
-            const asset = util.download_img(image_tag, '');
+            const asset = util.download_img(imageTag, 'a://b.com/c d.html');
             expect(asset.asset_id).is.not.null;
             expect(asset.asset_id).is.not.undefined;
-            expect(asset._image_data).to.deep.equal(image);
-            expect(asset._content_type).to.equal('image/png');
+            expect(asset.to_data()).to.deep.equal(image);
+
+            const metadata = asset.to_metadata();
+            expect(metadata.contentType).to.equal('image/png');
+            expect(metadata.canonicalURI).to.equal("data:image/png;" +
+                                                   "uri=a://b.com/c%20d.html;" +
+                                                   `sha256=${imageSha256Hash};`);
         });
 
         it('can handle jpeg urls correctly', function() {
-            let imageUrl = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.jpeg.txt');
-            let image = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.jpeg');
+            const imageUrlFile = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.jpeg.txt');
+            const image = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.jpeg');
+            const imageSha256Hash = '1bc8db1d29ab4d12a8d4296de97ec0b26aa6f666a8e12bc9ff78016274120363'
 
             // We want this as a string
-            imageUrl = imageUrl.toString();
+            let imageUrl = imageUrlFile.toString();
 
             if (imageUrl == undefined || imageUrl.length <= 0 ||
                 image == undefined || image.length <= 0) {
               throw new Error("Invalid data loaded from test image");
             }
 
-            let image_tag = "<img src=" + imageUrl + ">test</img>";
+            const imageTag = "<img src=" + imageUrl + ">test</img>";
 
-            const asset = util.download_img(image_tag, '');
+            const asset = util.download_img(imageTag, 'a://b.com/c d.html');
             expect(asset.asset_id).is.not.null;
             expect(asset.asset_id).is.not.undefined;
-            expect(asset._image_data).to.deep.equal(image);
-            expect(asset._content_type).to.equal('image/jpeg');
+            expect(asset.to_data()).to.deep.equal(image);
+
+            const metadata = asset.to_metadata();
+            expect(metadata.contentType).to.equal('image/jpeg');
+            expect(metadata.canonicalURI).to.equal("data:image/jpeg;" +
+                                                   "uri=a://b.com/c%20d.html;" +
+                                                   `sha256=${imageSha256Hash};`);
         });
     });
 });
