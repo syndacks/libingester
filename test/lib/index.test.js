@@ -13,7 +13,7 @@ describe('ImageAsset', function() {
         asset.set_last_modified_date(new Date(1492545280000));
         asset.set_image_data('image/jpeg', 'asdf');
 
-        const metadata = asset._to_metadata();
+        const metadata = asset.to_metadata();
 
         // Remove randomness -- should probably be a mock if I can
         // figure out how to use it.
@@ -33,7 +33,7 @@ describe('ImageAsset', function() {
             "revisionTag": '2017-04-18T19:54:40.000Z',
         });
 
-        const data = asset._to_data();
+        const data = asset.to_data();
         expect(data).to.equal('asdf');
     });
 });
