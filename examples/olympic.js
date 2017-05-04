@@ -17,6 +17,10 @@ function ingest_profile(hatch, uri) {
         const modified_date = new Date(Date.parse(modified_str));
         asset.set_last_modified_date(modified_date);
 
+        // Pull out the description.
+        const description = $profile('meta[name="description"]').attr('content');
+        asset.set_synopsis(description);
+
         // Put this in the "Profiles" sections of the app. Must match the name of the section
         // in the rest of the app.
         asset.set_section('Profiles');

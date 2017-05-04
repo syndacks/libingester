@@ -8,6 +8,7 @@ describe('ImageAsset', function() {
     it('can serialize out correctly', function() {
         const asset = new libingester.ImageAsset();
         asset.set_title('Test Asset');
+        asset.set_synopsis('Test Asset synopsis');
         asset.set_license('Proprietary');
         asset.set_canonical_uri('https://www.example.com/');
         asset.set_last_modified_date(new Date(1492545280000));
@@ -27,6 +28,7 @@ describe('ImageAsset', function() {
             "matchingLinks": [ 'https://www.example.com/' ],
 
             "title": 'Test Asset',
+            "synopsis": 'Test Asset synopsis',
             "license": 'Proprietary',
             "tags": [],
             "lastModifiedDate": '2017-04-18T19:54:40.000Z',
