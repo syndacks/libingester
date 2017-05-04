@@ -41,6 +41,9 @@ function ingest_profile(hatch, uri) {
         const headshot_image = libingester.util.download_img(headshot_img, base_uri);
         hatch.save_asset(headshot_image);
 
+        // Use the profile image as article thumbnail
+        asset.set_thumbnail(headshot_image);
+
         const image_gallery = $profile('.Collage img').map(function() {
             const asset = libingester.util.download_img(this, base_uri);
             hatch.save_asset(asset);
