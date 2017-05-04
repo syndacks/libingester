@@ -44,3 +44,39 @@ describe('ImageAsset', function() {
         expect(data).to.equal('asdf');
     });
 });
+
+describe('NewsAsset', function() {
+    it('can serialize out correctly', function() {
+        const asset = new libingester.NewsArticle();
+        asset.set_title('Test Asset');
+        asset.set_license('Proprietary');
+        asset.set_canonical_uri('https://www.example.com/');
+        asset.set_last_modified_date(new Date(1492545280000));
+        asset.set_document('<h1>Word of the Day</h1>');
+        asset.set_section("word_of_day");
+        asset.set_synopsis('a long time ago...');
+
+        const metadata = asset.to_metadata();
+
+        // Remove randomness -- should probably be a mock if I can
+        // figure out how to use it.
+        delete metadata['assetID'];
+        delete metadata['thumbnail'];
+
+        expect(metadata).to.deep.equal({
+            "objectType": 'ArticleObject',
+            "contentType": 'text/html',
+
+            "canonicalURI": 'https://www.example.com/',
+            "matchingLinks": [ 'https://www.example.com/' ],
+
+            "title": 'Test Asset',
+            "license": 'Proprietary',
+            "tags": ["word_of_day"],
+            "document": '<h1>Word of the Day</h1>',
+            "synopsis": 'a long time ago...',
+            "lastModifiedDate": '2017-04-18T19:54:40.000Z',
+            "revisionTag": '2017-04-18T19:54:40.000Z',
+        });
+    });
+});

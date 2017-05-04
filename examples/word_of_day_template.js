@@ -15,8 +15,6 @@ const structure_template = (`
     <p id="wordofDayType"> <i>{{ wordOfDayType }}</i></p>
     <p id="wordofDayDef">Definition: {{ wordOfDayDef }}</p>
     <br/>
-
-    <p id="sourceURL">Source URL: {{ sourceURL }}</p>
 </section>`);
 
 exports.structure_template = structure_template;
