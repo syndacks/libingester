@@ -104,16 +104,14 @@ describe('download_image', function() {
     });
 });
 
-describe('fetch_html', function() {
-    it('can handle gzipped responses', function(done) {
+describe('fetch_html', () => {
+    it('can handle gzipped responses', () => {
         const test_url = 'https://www.kapanlagi.com/' +
                         'intermezzone/' +
                         'bule-amerika-ini-nyoba-makan-buah-duku-ekspresinya-nggak-nahan-aee243.html';
         const doctype = '<!DOCTYPE html>';
-        util.fetch_html(test_url).then((result) => {
+        return util.fetch_html(test_url).then((result) => {
             expect(result.html().substring(0, doctype.length)).to.equal(doctype);
-            done();
-        })
-        .catch(done);
+        });
     });
 });
