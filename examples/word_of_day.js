@@ -5,7 +5,6 @@ const mustache = require('mustache');
 const rp = require('request-promise');
 const template = require('./word_of_day_template');
 const url = require('url');
-
 const home_page = 'http://www.thefreedictionary.com/_/archive.htm'; // Home section
 
 function ingest_article_profile(hatch, uri) {
