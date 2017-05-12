@@ -37,7 +37,7 @@ describe('encode_uri', function() {
     });
 });
 
-describe('download_image', function() {
+describe('download_img', function() {
     it('can handle downloading a regular src image', function() {
         let image_tag = "<img src=\"https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg\">test</img>";
 
