@@ -29,7 +29,7 @@ function ingest_article_profile(hatch, uri) {
 
         // Pluck wordOfDayDef
         const wordOfDayMixedString = $profile('td:contains("Definition:")').next().text();
-        const wordOfDayDef = wordOfDayMixedString.slice(wordOfDayMixedString.indexOf(" "));
+        const wordOfDayDef = wordOfDayMixedString.slice(wordOfDayMixedString.indexOf(" ")).trim();
         asset.set_synopsis(wordOfDayDef);
 
         // Pluck wordOfDayType
