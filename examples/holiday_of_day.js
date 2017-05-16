@@ -3,7 +3,7 @@
 const libingester = require('libingester');
 const mustache = require('mustache');
 const rp = require('request-promise');
-const template = require('./day_in_history_template');
+const template = require('./holiday_of_day_template');
 const url = require('url');
 
 const HOMEPAGE = 'http://www.thefreedictionary.com/_/archive.htm'; // Home section
@@ -21,39 +21,39 @@ function ingestArticleProfile(hatch, uri) {
         const modified_date = new Date(Date.parse(articleDate));
         asset.set_last_modified_date(modified_date);
 
-        // Set date and title
+        // Set title
         const title = $profile('h1').first().text() + ": " + articleDate;
 
-        // Pluck dayInHistoryYearBlob
-        const dayInHistoryBlob = $profile('tr:contains("This Day in History")').next().text();
+        // // Pluck todaysHolidayBlob
+        const todaysHolidayBlob = $profile('tr:contains("Today\'s Holiday")').next().text();
 
-        // Pluck dayInHistoryYear
-        const reHistory = /\(([0-9]){4}\)/g;
-        const dayInHistoryYear = reHistory.exec(dayInHistoryBlob)[0];
-        const dayInHistoryYearFinal = dayInHistoryYear.slice(1,5);
-        asset.set_license(dayInHistoryYearFinal);
+        // Pluck todaysHolidayYearFinal
+        const reHoliday = /\(([0-9]){4}\)/g;
+        const todaysHolidayYear = reHoliday.exec(todaysHolidayBlob)[0];
+        const todaysHolidayYearFinal = todaysHolidayYear.slice(1,5);
+        asset.set_license(todaysHolidayYearFinal);
 
-        // Pluck dayInHistoryHead
-        const dayInHistoryHead = dayInHistoryBlob.split(dayInHistoryYear)[0];
-        const dayInHistoryHeadFinal = dayInHistoryHead.trim();
-        asset.set_title(dayInHistoryHeadFinal);
+        // Pluck todaysHolidayHead
+        const todaysHolidayHead = todaysHolidayBlob.split(todaysHolidayYear)[0];
+        const todaysHolidayHeadFinal = todaysHolidayHead.trim();
+        asset.set_title(todaysHolidayHeadFinal);
 
-        // Pluck dayInHistoryBody
-        const dayInHistoryBody = dayInHistoryBlob.split(dayInHistoryYear)[1];
-        const dayInHistoryBodyFinal = dayInHistoryBody.split("\tMore...")[0];
-        asset.set_synopsis(dayInHistoryBodyFinal);
+        // Pluck todaysHolidayBody
+        const todaysHolidayBody = todaysHolidayBlob.split(todaysHolidayYear)[1];
+        const todaysHolidayBodyFinal = todaysHolidayBody.split("\tMore...")[0].trim();
+        asset.set_synopsis(todaysHolidayBodyFinal);
 
         const content = mustache.render(template.structure_template, {
             title: title,
             articleDate: articleDate,
 
-            dayInHistoryHead: dayInHistoryHeadFinal,
-            dayInHistoryBody: dayInHistoryBodyFinal,
-            dayInHistoryYear: dayInHistoryYearFinal
+            todaysHolidayHead: todaysHolidayHead,
+            todaysHolidayBody: todaysHolidayBodyFinal,
+            todaysHolidayYear: todaysHolidayYearFinal
         });
 
         asset.set_document(content);
-        asset.set_section("day_in_history");
+        asset.set_section("holiday_of_day");
 
         hatch.save_asset(asset);
     });
