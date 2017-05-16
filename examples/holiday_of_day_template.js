@@ -11,9 +11,9 @@ const structure_template = (`
 <section class="mainContent">
 
   <h3>On this Day in History</h3>
-    <p id="dayInHistoryHead">{{ dayInHistoryHead }}</p>
-    <p id="dayInHistoryBody">{{ dayInHistoryBody }}</p>
-    <p id="dayInHistoryYear">{{ dayInHistoryYear }}</p>
+    <p id="todaysHolidayHead">{{ todaysHolidayHead }}</p>
+    <p id="todaysHolidayBody">{{ todaysHolidayBody }}</p>
+    <p id="todaysHolidayYear">{{ todaysHolidayYear }}</p>
 
     <br/>
 </section>`);
