@@ -2,6 +2,7 @@
 
 const expect = require('chai').expect;
 const fs = require('fs');
+const cheerio = require('cheerio');
 
 const util = require('../../lib/util');
 
@@ -38,10 +39,14 @@ describe('encode_uri', function() {
 });
 
 describe('download_img', function() {
-    it('can handle downloading a regular src image', function() {
-        let image_tag = "<img src=\"https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg\">test</img>";
+    it('throws an error if given a string', function (){
+        expect(() => util.download_img('<img src="foo">')).to.throw();
+    });
 
-        const asset = util.download_img(image_tag, '');
+    it('can handle downloading a regular src image', function() {
+        let imageTag = cheerio("<img src=\"https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg\">test</img>");
+
+        const asset = util.download_img(imageTag, '');
         expect(asset.asset_id).is.not.null;
         expect(asset.asset_id).is.not.undefined;
         expect(asset.to_data()).is.not.null;
@@ -61,7 +66,7 @@ describe('download_img', function() {
               throw new Error("Invalid data loaded from test image");
             }
 
-            const imageTag = "<img src=" + imageUrl + ">test</img>";
+            const imageTag = cheerio("<img src=" + imageUrl + ">test</img>");
 
             const asset = util.download_img(imageTag, 'a://b.com/c d.html');
             expect(asset.asset_id).is.not.null;
@@ -88,7 +93,7 @@ describe('download_img', function() {
               throw new Error("Invalid data loaded from test image");
             }
 
-            const imageTag = "<img src=" + imageUrl + ">test</img>";
+            const imageTag = cheerio("<img src=" + imageUrl + ">test</img>");
 
             const asset = util.download_img(imageTag, 'a://b.com/c d.html');
             expect(asset.asset_id).is.not.null;
