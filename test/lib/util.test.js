@@ -52,6 +52,24 @@ describe('download_img', function() {
         expect(asset.to_data()).is.not.null;
     });
 
+    describe('lightbox wrapper', function() {
+        it('wraps the image in a link', function() {
+            const html = `
+<html>
+    <img src="https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg" />
+</html>
+            `;
+            const $doc = cheerio.load(html);
+            const $image = $doc('img');
+            util.download_img($image, '');
+
+            const imageLink = $doc('a');
+            expect(imageLink.length).to.equal(1);
+            expect(imageLink.attr('data-soma-widget')).to.equal('ImageLink');
+            expect(imageLink.find('img').length).to.equal(1);
+        });
+    });
+
     describe('data urls', function() {
         it('can handle png urls correctly', function() {
             const imageUrlFile = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png.txt');
