@@ -5,6 +5,7 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 
 const util = require('../../lib/util');
+const libingester = require('../../lib/index');
 
 describe('encode_uri', function() {
     it('encodes URIs correctly', function() {
@@ -127,16 +128,37 @@ describe('download_img', function() {
     });
 });
 
-describe('fetch_html', function() {
-    it('can handle gzipped responses', function(done) {
+// FIXME this text intermittently fails because it reaches out to an external
+// server. We should replace it with gzipped content served locally
+describe('fetch_html', () => {
+    it('can handle gzipped responses', () => {
         const test_url = 'https://www.kapanlagi.com/' +
                         'intermezzone/' +
                         'bule-amerika-ini-nyoba-makan-buah-duku-ekspresinya-nggak-nahan-aee243.html';
         const doctype = '<!DOCTYPE html>';
-        util.fetch_html(test_url).then((result) => {
+        return util.fetch_html(test_url).then((result) => {
             expect(result.html().substring(0, doctype.length)).to.equal(doctype);
-            done();
-        })
-        .catch(done);
+        });
+    });
+});
+
+describe('get_embedded_video_asset', () => {
+    it('works', () => {
+        const articleHtml = fs.readFileSync(__dirname + '/test_files/article_with_video.html');
+        const $ = cheerio.load(articleHtml);
+        const iframeTag = $('iframe');
+        const videoTag = $('video');
+
+        const iframeAsset = util.get_embedded_video_asset(iframeTag, iframeTag.attr('src'));
+        const videoAsset = util.get_embedded_video_asset(videoTag, videoTag.attr('src'));
+
+        expect(iframeAsset).to.be.instanceOf(libingester.VideoAsset);
+        expect(videoAsset).to.be.instanceOf(libingester.VideoAsset);
+
+        expect($('iframe').length).to.equal(0);
+        expect($('video > source').length).to.equal(2);
+
+        const video_job_ids = $('video').map((i, v) => v.attribs['data-libingester-asset-id']).get();
+        expect(video_job_ids).to.deep.equal([iframeAsset.asset_id, videoAsset.asset_id]);
     });
 });
