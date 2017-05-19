@@ -55,6 +55,7 @@ describe('NewsAsset', function() {
         asset.set_document('<h1>Word of the Day</h1>');
         asset.set_section("word_of_day");
         asset.set_synopsis('a long time ago...');
+        asset.set_as_static_page();
 
         const metadata = asset.to_metadata();
 
@@ -71,7 +72,7 @@ describe('NewsAsset', function() {
 
             "title": 'Test Asset',
             "license": 'Proprietary',
-            "tags": ["word_of_day"],
+            "tags": ["word_of_day", "EknStaticTag"],
             "document": '<h1>Word of the Day</h1>',
             "synopsis": 'a long time ago...',
             "lastModifiedDate": '2017-04-18T19:54:40.000Z',
