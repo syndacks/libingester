@@ -19,9 +19,9 @@ describe('ImageAsset', function() {
         const metadata = asset.to_metadata();
 
         // Check that asset ID and thumbnail asset ID are passed through
-	expect(metadata['assetID']).to.equal(asset.asset_id);
-	expect(metadata['thumbnail']).to.equal(thumbnail_asset.asset_id);
-	// Remove the ID fields before checking the rest
+        expect(metadata['assetID']).to.equal(asset.asset_id);
+        expect(metadata['thumbnail']).to.equal(thumbnail_asset.asset_id);
+        // Remove the ID fields before checking the rest
         delete metadata['assetID'];
         delete metadata['thumbnail'];
 
