@@ -53,6 +53,32 @@ describe('download_img', function() {
         expect(asset.to_data()).is.not.null;
     });
 
+    it('handles Cheerio "node" objects as well', function() {
+            const html = `
+<html>
+    <img src="https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg" />
+    <img src="https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg" />
+    <img src="https://endlessos.com/wp-content/uploads/2016/05/Home_Video@2x.jpg" />
+</html>
+            `;
+            const $doc = cheerio.load(html);
+            const $images = $doc('img');
+            $images.map(function() {
+                // `this` refers to an internal Cheerio "node" object which
+                // doesn't have most of the bells and whistles of a normal
+                // Cheerio object, such as the `attr()` function
+                util.download_img(this, '');
+            });
+
+            const $imageLinks = $doc('a');
+            $imageLinks.map(function() {
+                const $imageLink = cheerio(this);
+                expect($imageLink.length).to.equal(1);
+                expect($imageLink.attr('data-soma-widget')).to.equal('ImageLink');
+                expect($imageLink.find('img').length).to.equal(1);
+            });
+    });
+
     describe('lightbox wrapper', function() {
         it('wraps the image in a link', function() {
             const html = `
