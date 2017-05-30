@@ -158,6 +158,50 @@ describe('ImageAsset', function() {
     });
 });
 
+describe('BlogArticle', function() {
+    it('can serialize out correctly', function() {
+        const asset = new libingester.BlogArticle();
+        asset.set_title('Test Asset');
+        asset.set_license('Proprietary');
+        asset.set_canonical_uri('https://www.example.com/');
+        asset.set_last_modified_date(new Date(1492545280000));
+        asset.set_synopsis('a long time ago...');
+        asset.set_body('<h1>Word of the Day</h1>');
+        asset.set_author('Coco');
+        asset.set_date_published(new Date(1492545280000));
+        asset.set_read_more_text('More!');
+        asset.set_tags(['some', 'tags']);
+        asset.set_as_static_page();
+        asset.render();
+
+        const metadata = asset.to_metadata();
+
+        delete metadata['assetID'];
+
+        expect(metadata['document']).to.contain('<h1>Word of the Day</h1>');
+        expect(metadata['document']).to.contain('More!');
+        delete metadata['document'];
+
+        expect(metadata).to.deep.eql({
+            "objectType": 'ArticleObject',
+            "contentType": 'text/html',
+
+            "canonicalURI": 'https://www.example.com/',
+            "matchingLinks": [ 'https://www.example.com/' ],
+
+            "title": 'Test Asset',
+            "license": 'Proprietary',
+            "tags": ["some", "tags", "EknStaticTag"],
+            "synopsis": 'a long time ago...',
+            "lastModifiedDate": '2017-04-18T19:54:40.000Z',
+            "revisionTag": '2017-04-18T19:54:40.000Z',
+
+            "author": 'Coco',
+            "published": '2017-04-18T19:54:40.000Z',
+        });
+    });
+});
+
 describe('NewsAsset', function() {
     it('can serialize out correctly', function() {
         const asset = new libingester.NewsArticle();
