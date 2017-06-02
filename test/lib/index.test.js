@@ -1,8 +1,25 @@
 'use strict';
 
+const fs = require('fs');
 const expect = require('chai').expect;
 
 const libingester = require('../../lib/index');
+
+describe('Hatch', function() {
+    it('can return path of hatch', function() {
+        const hatch = new libingester.Hatch("abcd");
+        expect(hatch.get_path()).to.match(/hatch_abcd_[0-9_]+/);
+
+        fs.rmdirSync(hatch.get_path());
+    });
+
+    it('can be forced to use a specific path', function() {
+        const hatch = new libingester.Hatch("abcd", { path: "./foo_bar_baz" });
+        expect(hatch.get_path()).to.match(/foo_bar_baz/);
+
+        fs.rmdirSync(hatch.get_path());
+    });
+});
 
 describe('ImageAsset', function() {
     it('can serialize out correctly', function() {
