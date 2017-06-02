@@ -19,6 +19,56 @@ describe('Hatch', function() {
 
         fs.rmdirSync(hatch.get_path());
     });
+
+    describe('argv path option', function() {
+        it('does not blow up when path arg is not there', function() {
+            // Implicit non-exception
+            const hatch = new libingester.Hatch("abcd", { argv: ["--foo", "/some/path"] });
+            fs.rmdirSync(hatch.get_path());
+        });
+
+        it('can process path correctly from passed in argv', function() {
+            const hatch = new libingester.Hatch("abcd", { argv: ["--path", "./hatch_foo"] });
+            expect(hatch.get_path()).to.equal("./hatch_foo");
+
+            fs.rmdirSync(hatch.get_path());
+        });
+
+        it('does not break if invalid arg position', function() {
+            const hatch = new libingester.Hatch("abcd", { argv: ["foo", "--path"] });
+            expect(hatch.get_path()).to.match(/hatch_abcd_[0-9_]+/);
+
+            fs.rmdirSync(hatch.get_path());
+        });
+
+        it('creates the directory path if missing', function() {
+            const targetDir = "./abcdefg";
+            if (fs.existsSync(targetDir)) {
+                fs.rmdirSync(targetDir);
+            }
+
+            expect(fs.existsSync(targetDir)).to.be.falsey;
+
+            const hatch = new libingester.Hatch("abcd", { argv: ["--path", targetDir] });
+            expect(fs.lstatSync(targetDir).isDirectory()).to.be.truthy;
+
+            fs.rmdirSync(targetDir);
+        });
+
+        it('does not break if directory is already there', function() {
+            const targetDir = "./abcdefg2";
+            if (fs.existsSync(targetDir)) {
+                fs.rmdirSync(targetDir);
+            }
+            fs.mkdirSync(targetDir, 0o775);
+
+            expect(fs.lstatSync(targetDir).isDirectory()).to.be.truthy;
+
+            const hatch = new libingester.Hatch("abcd", { argv: ["--path", targetDir] });
+
+            fs.rmdirSync(targetDir);
+        });
+    });
 });
 
 describe('ImageAsset', function() {
