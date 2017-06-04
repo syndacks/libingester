@@ -20,6 +20,52 @@ describe('Hatch', function() {
         fs.rmdirSync(hatch.get_path());
     });
 
+
+    describe('argv no-tgz option', function() {
+        it('does not blow up when no-tgz arg is missing', function() {
+            // Implicit non-exception
+            const hatch = new libingester.Hatch("aacd", { argv: ["--tgz", "/some/path"] });
+            fs.rmdirSync(hatch.get_path());
+        });
+
+        it('does not blow up when no-tgz arg is at the end', function() {
+            // Implicit non-exception
+            const hatch = new libingester.Hatch("abad", { argv: ["/blah", "--no-tgz"] });
+            fs.rmdirSync(hatch.get_path());
+        });
+
+        it('does not blow up when no-tgz arg is at the end', function() {
+            // Implicit non-exception
+            const hatch = new libingester.Hatch("abbd", { argv: ["/blah", "--no-tgz"] });
+            fs.rmdirSync(hatch.get_path());
+        });
+
+        it('does not skip tgz by default', function() {
+            const hatch = new libingester.Hatch("aaaa", { argv: ["/blah"] });
+            expect(hatch.is_exporting_tgz()).to.be.equal(true);
+
+            return hatch.finish().then(() => {
+                console.log(`${hatch.get_path()}.tar.gz`);
+                expect(fs.existsSync(`${hatch.get_path()}.tar.gz`)).to.be.equal(true);
+
+                fs.unlinkSync(`${hatch.get_path()}/hatch_manifest.json`);
+                fs.rmdirSync(hatch.get_path());
+            });
+        });
+
+        it('skip tgz if flag set', function() {
+            const hatch = new libingester.Hatch("abce", { argv: ["/blah", "--no-tgz"] });
+            expect(hatch.is_exporting_tgz()).to.be.equal(false);
+
+            return hatch.finish().then(() => {
+                expect(fs.existsSync(`${hatch.get_path()}.tar.gz`)).to.be.equal(false);
+
+                fs.unlinkSync(`${hatch.get_path()}/hatch_manifest.json`);
+                fs.rmdirSync(hatch.get_path());
+            });
+        });
+    });
+
     describe('argv path option', function() {
         it('does not blow up when path arg is not there', function() {
             // Implicit non-exception
@@ -47,10 +93,10 @@ describe('Hatch', function() {
                 fs.rmdirSync(targetDir);
             }
 
-            expect(fs.existsSync(targetDir)).to.be.falsey;
+            expect(fs.existsSync(targetDir)).to.be.equal(false);
 
             const hatch = new libingester.Hatch("abcd", { argv: ["--path", targetDir] });
-            expect(fs.lstatSync(targetDir).isDirectory()).to.be.truthy;
+            expect(fs.lstatSync(targetDir).isDirectory()).to.be.equal(true);
 
             fs.rmdirSync(targetDir);
         });
@@ -62,7 +108,7 @@ describe('Hatch', function() {
             }
             fs.mkdirSync(targetDir, 0o775);
 
-            expect(fs.lstatSync(targetDir).isDirectory()).to.be.truthy;
+            expect(fs.lstatSync(targetDir).isDirectory()).to.be.equal(true);
 
             const hatch = new libingester.Hatch("abcd", { argv: ["--path", targetDir] });
 
