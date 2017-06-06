@@ -1,3 +1,7 @@
+<!doctype html>
+<html>
+
+<body>
 <header>
     <div class="context">
         <p id="context-link"></p>
@@ -46,3 +50,5 @@
         datePublishedField.innerHTML = datePublished.toLocaleDateString();
     }
 </script>
+</body>
+</html>
