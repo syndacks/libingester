@@ -1,0 +1,48 @@
+<header>
+    <div class="context">
+        <p id="context-link"></p>
+    </div>
+    <div class="extra-header-right">
+        <p class="date-published" id="date-published"></p>
+        <p class="source-link">
+            <a class="eos-show-link" href="{{canonical_uri}}">
+                {{source}}
+            </a>
+            &mdash;
+            <span class="authors">{{authors}}</span>
+        </p>
+    </div>
+</header>
+<article>
+    <header class="article-title">
+        <h1>{{title}}</h1>
+    </header>
+    <section>
+        <p class="lede">{{{lede}}}</p>
+        {{#main_image}}
+            <figure class="main">
+                <img data-libingester-asset-id="{{asset_id}}">
+                {{{caption}}}
+            </figure>
+        {{/main_image}}
+        {{{body}}}
+    </section>
+</article>
+<footer>
+    <hr>
+    <div class="read-more">{{{read_more}}}</div>
+</footer>
+<script type="text/javascript">
+    let metadata = window.contentMetadata;
+    if (metadata) {
+        let contextLink = document.getElementById('context-link');
+        contextLink.innerHTML = metadata.sets
+            .map(set => '<a class="eos-show-link" href="' + set.id + '">' +
+                set.title + '</a>')
+            .join(' | ');
+
+        let datePublishedField = document.getElementById('date-published');
+        let datePublished = new Date(metadata.published);
+        datePublishedField.innerHTML = datePublished.toLocaleDateString();
+    }
+</script>

@@ -10,6 +10,7 @@
     "fs-extra": "^2.0.0",
     "jest": "^19.0.2",
     "jquery": "^1.7.4",
+    "mustache": "^2.3.0",
     "parse-data-url": "^0.1.4",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",

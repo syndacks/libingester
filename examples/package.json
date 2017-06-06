@@ -6,6 +6,8 @@
     "libingester": "file:../",
     "mustache": "^2.3.0",
     "request": "^2.80.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "rss-to-json": "^1.0.2",
+    "thenify-all": "^1.6.0"
   }
 }
