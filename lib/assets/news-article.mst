@@ -1,8 +1,11 @@
 <!doctype html>
 <html>
+<head>
+    <style>{{{stylesheet}}}</style>
+</head>
 
 <body>
-<header>
+<header class="extra-header">
     <div class="context">
         <p id="context-link"></p>
     </div>
