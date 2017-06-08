@@ -87,6 +87,17 @@ function ingest_article(hatch, uri) {
         asset.set_body(body);
         asset.set_tags(tags);
         asset.set_read_more_text('Original Article at wwww.livingloving.net');
+        asset.set_custom_scss(`
+            $body-font: Lato;
+            $title-font: Raleway;
+            $primary-light-color: #729fcf;
+            $primary-dark-color: #204a87;
+            $accent-light-color: #8ae234;
+            $accent-dark-color: #4e9a06;
+            $background-light-color: #eeeefc;
+            $background-dark-color: #888a95;
+            @import '_default';
+        `);
         asset.render();
 
         hatch.save_asset(asset);
