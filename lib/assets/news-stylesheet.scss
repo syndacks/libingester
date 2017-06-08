@@ -76,11 +76,18 @@ figcaption {
 
 blockquote {
     color: $primary-light-color;
+    display: flex;
+    flex-wrap: wrap;
     font-family: $support-font;
     font-size: 1.5rem;
     font-style: italic;
     line-height: 1.333;
     margin-bottom: 1rem;
+
+    .quote-decoration {
+        align-self: flex-start;
+        margin-right: 1rem;
+    }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -176,6 +183,12 @@ footer {
     line-height: 1.5;
 }
 
+.read-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 // Responsive
 
 // Define all our responsive properties in terms of three parameters, then
@@ -202,6 +215,19 @@ footer {
         margin-left: $real-dedent;
     }
 
+    blockquote {
+        p, cite {
+            flex: calc(100% + #{$real-dedent});
+        }
+
+        .quote-decoration {
+            $size: calc(#{-$real-dedent} - 1rem);
+            flex: $size 0 0;
+            height: $size;
+            width: $size;
+        }
+    }
+
     footer hr {
         margin-left: -$real-indent;
         margin-right: -$real-indent;
@@ -211,7 +237,22 @@ footer {
 @include responsive-elements($body-size: 20px);
 
 @media(max-width: $compact-max-width) {
+    $blockquote-extra-indent: 10;
     @include responsive-elements($body-size: 20px, $indent: 10, $dedent: 0);
+
+    blockquote {
+        $real-extra-indent: $paper-width * $blockquote-extra-indent / 100;
+        p, cite {
+            flex: calc(100% - #{$real-extra-indent});
+        }
+
+        .quote-decoration {
+            $size: calc(#{$real-extra-indent} - 1rem);
+            flex: $size 0 0;
+            height: $size;
+            width: $size;
+        }
+    }
 }
 
 @media(min-width: $spacious-min-width) {
