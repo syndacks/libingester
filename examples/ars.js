@@ -27,6 +27,17 @@ function ingest_article(hatch, {title, description, url, created}) {
         asset.set_source('Ars Technica');
         asset.set_license('Proprietary');
         asset.set_section('open-source');
+        asset.set_custom_scss(`
+            $body-font: Lato;
+            $title-font: Raleway;
+            $primary-light-color: #729fcf;
+            $primary-dark-color: #204a87;
+            $accent-light-color: #8ae234;
+            $accent-dark-color: #4e9a06;
+            $background-light-color: #eeeefc;
+            $background-dark-color: #888a95;
+            @import '_default';
+        `);
 
         let canonical_uri = $('head link[rel="canonical"]').attr('href');
         asset.set_canonical_uri(canonical_uri);

@@ -219,8 +219,10 @@ describe('BlogArticle', function() {
 });
 
 describe('NewsAsset', function() {
-    it('can serialize out correctly', function() {
-        const asset = new libingester.NewsArticle();
+    let asset;
+
+    beforeEach(function () {
+        asset = new libingester.NewsArticle();
         asset.set_title('Test Asset');
         asset.set_license('Proprietary');
         asset.set_canonical_uri('https://www.example.com/');
@@ -234,7 +236,9 @@ describe('NewsAsset', function() {
         asset.set_date_published(new Date(1492545280000));
         asset.set_read_more_link('More!');
         asset.set_lede('<p>Exciting paragraph</p>');
+    });
 
+    it('can serialize out correctly', function() {
         asset.render();
 
         const metadata = asset.to_metadata();
@@ -266,5 +270,23 @@ describe('NewsAsset', function() {
             "sourceName": 'Dictionary',
             "published": '2017-04-18T19:54:40.000Z',
         });
+    });
+
+    it('renders the default stylesheet if no custom SCSS set', function () {
+        asset.render();
+
+        const metadata = asset.to_metadata();
+
+        // Match at least one CSS rule despite no custom SCSS
+        expect(metadata['document']).to.match(/<style(.|\n)*{(.|\n)*:(.|\n)*}(.|\n)*<\/style>/);
+    });
+
+    it('renders the custom SCSS', function () {
+        asset.set_custom_scss('@import "_default"; * { color:red; }');
+        asset.render();
+
+        const metadata = asset.to_metadata();
+        // Regex handles how libsass might minify the rendered CSS
+        expect(metadata['document']).to.match(/\*\s*{\s*color:\s*red;?\s*}/);
     });
 });

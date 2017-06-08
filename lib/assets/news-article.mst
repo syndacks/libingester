@@ -1,4 +1,11 @@
-<header>
+<!doctype html>
+<html>
+<head>
+    <style>{{{stylesheet}}}</style>
+</head>
+
+<body>
+<header class="extra-header">
     <div class="context">
         <p id="context-link"></p>
     </div>
@@ -46,3 +53,5 @@
         datePublishedField.innerHTML = datePublished.toLocaleDateString();
     }
 </script>
+</body>
+</html>
