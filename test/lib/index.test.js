@@ -203,7 +203,7 @@ describe('BlogArticle', function() {
             "lastModifiedDate": '2017-04-18T19:54:40.000Z',
             "revisionTag": '2017-04-18T19:54:40.000Z',
 
-            "author": 'Coco',
+            "authors": ['Coco'],
             "published": '2017-04-18T19:54:40.000Z',
         });
     });
