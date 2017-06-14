@@ -40,15 +40,20 @@ function ingestArticleProfile(hatch, uri) {
             quoteAuthor: quoteAuthor
         });
 
+        // TODO: Convert to v2.0 API
         asset.set_document(content);
         asset.set_section("quote_of_the_day");
 
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    const hatch = new libingester.Hatch();
+    const hatch = new libingester.Hatch('quote_of_day', 'en');
     // make request to the index (home) page
     libingester.util.fetch_html(HOMEPAGE).then(($pages) => {
       // retrieve article URLs; '-2n+2' returns ~30 articles instead of 2,000+

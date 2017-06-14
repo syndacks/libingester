@@ -35,11 +35,15 @@ function ingest_video(hatch, uri) {
         asset.set_download_uri(video_uri);
 
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    const hatch = new libingester.Hatch('voa');
+    const hatch = new libingester.Hatch('voa', 'en');
 
     // Undocumented feature: if you pass an invalid page it returns all videos.
     const videos_list = 'http://learningenglish.voanews.com/z/4729?p=999';

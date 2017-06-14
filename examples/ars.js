@@ -103,11 +103,15 @@ function ingest_article(hatch, entry) {
 
         asset.render();
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    let hatch = new Libingester.Hatch('ars');
+    let hatch = new Libingester.Hatch('ars', 'en');
     RssToJson.load(FEED_URI).then(rss =>
         Promise.all(rss.items.map(entry => ingest_article(hatch, entry))))
     .then(() => hatch.finish())

@@ -47,14 +47,19 @@ function ingest_wowshack_page(hatch, uri) {
             image_gallery: image_gallery,
         });
 
+        // TODO: Convert to v2.0 API
         asset.set_document(content);
 
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    const hatch = new libingester.Hatch('old_indonesia');
+    const hatch = new libingester.Hatch('old_indonesia', 'en');
 
     const base_uri = 'https://www.wowshack.com/a-rare-historical-look-at-old-indonesia-25-photos-taken-pre-1920/';
     ingest_wowshack_page(hatch, base_uri).then(() => {
