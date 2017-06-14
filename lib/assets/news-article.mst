@@ -5,11 +5,11 @@
 </head>
 
 <body>
-<header class="extra-header">
-    <div class="context">
+<header class="article-information">
+    <div class="article-categories">
         <p id="context-link"></p>
     </div>
-    <div class="extra-header-right">
+    <div class="article-support-info">
         <p class="date-published" id="date-published"></p>
         <p class="source-link">
             <a class="eos-show-link" href="{{canonical_uri}}">
