@@ -101,13 +101,13 @@ describe('download_img', function() {
         it('can handle png urls correctly', function() {
             const imageUrlFile = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png.txt');
             const image = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.png');
-            const imageSha256Hash = 'e7f555cc474b1d12a52cb9b9fa012a3502e8a2d972e19d49a898629937ac13ca'
+            const imageSha256Hash = 'e7f555cc474b1d12a52cb9b9fa012a3502e8a2d972e19d49a898629937ac13ca';
 
             // We want this as a string
             let imageUrl = imageUrlFile.toString();
 
-            if (imageUrl == undefined || imageUrl.length <= 0 ||
-                image == undefined || image.length <= 0) {
+            if (imageUrl === undefined || imageUrl.length <= 0 ||
+                image === undefined || image.length <= 0) {
               throw new Error("Invalid data loaded from test image");
             }
 
@@ -128,13 +128,13 @@ describe('download_img', function() {
         it('can handle jpeg urls correctly', function() {
             const imageUrlFile = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.jpeg.txt');
             const image = fs.readFileSync(__dirname + '/test_files/base64_encoded_image.jpeg');
-            const imageSha256Hash = '1bc8db1d29ab4d12a8d4296de97ec0b26aa6f666a8e12bc9ff78016274120363'
+            const imageSha256Hash = '1bc8db1d29ab4d12a8d4296de97ec0b26aa6f666a8e12bc9ff78016274120363';
 
             // We want this as a string
             let imageUrl = imageUrlFile.toString();
 
-            if (imageUrl == undefined || imageUrl.length <= 0 ||
-                image == undefined || image.length <= 0) {
+            if (imageUrl === undefined || imageUrl.length <= 0 ||
+                image === undefined || image.length <= 0) {
               throw new Error("Invalid data loaded from test image");
             }
 

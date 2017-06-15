@@ -101,11 +101,15 @@ function ingest_article(hatch, uri) {
         asset.render();
 
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    let hatch = new libingester.Hatch();
+    let hatch = new libingester.Hatch('livingloving', 'id');
     rss2json.load(rss_uri, function(err, rss) {
         let articles_links = rss.items.map((datum) => datum.url);
         Promise.all(articles_links.map((uri) => ingest_article(hatch, uri))).then(() => hatch.finish());

@@ -46,15 +46,20 @@ function ingest_article_profile(hatch, uri) {
             wordOfDayDef: wordOfDayDef,
         });
 
+        // TODO: Convert to v2.0 API
         asset.set_document(content);
         asset.set_section("word_of_day");
 
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    const hatch = new libingester.Hatch();
+    const hatch = new libingester.Hatch('word_of_day', 'en');
     // make request to the index (home) page
     libingester.util.fetch_html(home_page).then(($pages) => {
       // retrieve article URLs; '-2n+2' returns ~30 articles instead of 2,000+

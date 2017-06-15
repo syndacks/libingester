@@ -73,14 +73,19 @@ function ingest_profile(hatch, uri) {
             bio_html: bio.html(),
         });
 
+        // TODO: Convert to v2.0 API
         asset.set_document(content);
 
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    const hatch = new libingester.Hatch('olympic');
+    const hatch = new libingester.Hatch('olympic', 'en');
 
     const base_uri = 'https://www.olympic.org/';
     const profiles_list = 'https://www.olympic.org/ajaxscript/loadmoretablelist/games/athletes/%7BA5FEFBC6-8FF7-4B0A-A96A-EB7943EA4E2F%7D/100/0';

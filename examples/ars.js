@@ -14,16 +14,16 @@ function remove_intermediate($, selector) {
     $(selector).each((i, elem) => $(elem).replaceWith($(elem).contents()));
 }
 
-function ingest_article(hatch, {title, description, url, created}) {
-    return Libingester.util.fetch_html(url).then($ => {
-        const BASE_URI = Libingester.util.get_doc_base_uri($, url);
+function ingest_article(hatch, entry) {
+    return Libingester.util.fetch_html(entry.url).then($ => {
+        const BASE_URI = Libingester.util.get_doc_base_uri($, entry.url);
         let asset = new Libingester.NewsArticle();
 
-        console.log('processing', title);
-        asset.set_title(title);
-        asset.set_synopsis(description);
-        asset.set_date_published(created);
-        asset.set_last_modified_date(new Date(created));
+        console.log('processing', entry.title);
+        asset.set_title(entry.title);
+        asset.set_synopsis(entry.description);
+        asset.set_date_published(entry.created);
+        asset.set_last_modified_date(new Date(entry.created));
         asset.set_source('Ars Technica');
         asset.set_license('Proprietary');
         asset.set_section('open-source');
@@ -103,11 +103,15 @@ function ingest_article(hatch, {title, description, url, created}) {
 
         asset.render();
         hatch.save_asset(asset);
+    })
+    .catch(err => {
+        console.error(err.stack);
+        throw err;
     });
 }
 
 function main() {
-    let hatch = new Libingester.Hatch('ars');
+    let hatch = new Libingester.Hatch('ars', 'en');
     RssToJson.load(FEED_URI).then(rss =>
         Promise.all(rss.items.map(entry => ingest_article(hatch, entry))))
     .then(() => hatch.finish())

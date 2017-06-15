@@ -6,62 +6,83 @@ const expect = require('chai').expect;
 const libingester = require('../../lib/index');
 
 describe('Hatch', function() {
-    it('can return path of hatch', function() {
-        const hatch = new libingester.Hatch("abcd");
-        expect(hatch.get_path()).to.match(/hatch_abcd_[0-9_]+/);
+    let hatch;
 
-        fs.rmdirSync(hatch.get_path());
+    afterEach(() => {
+        if (fs.existsSync(hatch.get_path())) {
+            fs.rmdirSync(hatch.get_path());
+        }
     });
 
-    it('can be forced to use a specific path', function() {
-        const hatch = new libingester.Hatch("abcd", { path: "./foo_bar_baz" });
-        expect(hatch.get_path()).to.match(/foo_bar_baz/);
+    describe('required params', function() {
+        it('can return path of hatch', function() {
+            hatch = new libingester.Hatch("abcd", "en");
+            expect(hatch.get_path()).to.match(/hatch_abcd_[0-9_]+/);
+        });
 
-        fs.rmdirSync(hatch.get_path());
+        it('can return the name of hatch', function() {
+            hatch = new libingester.Hatch("testing", "en");
+            expect(hatch.get_name()).to.equal("testing");
+        });
+
+        it('can return the language of hatch', function() {
+            hatch = new libingester.Hatch("abcd", "something");
+            expect(hatch.get_language()).to.equal("something");
+        });
+
+        it('can be forced to use specific path', function() {
+            hatch = new libingester.Hatch("abcd", "en", { path: "./foo_bar_baz" });
+            expect(hatch.get_path()).to.match(/foo_bar_baz/);
+        });
+
+        it('requires name and lang parameters to instantiate', function() {
+            expect(() => { new libingester.Hatch() }).to.throw();
+            expect(() => { new libingester.Hatch("abcd") }).to.throw();
+        });
+
+        // XXX: This is to ensure that v2-converted ingesters know that they
+        //      need to use the newer api.
+        it('requires second param to be a string', function() {
+            expect(() => { new libingester.Hatch("abcd", { foo: "bar" }) }).to.throw();
+        });
     });
-
 
     describe('argv no-tgz option', function() {
         it('does not blow up when no-tgz arg is missing', function() {
             // Implicit non-exception
-            const hatch = new libingester.Hatch("aacd", { argv: ["--tgz", "/some/path"] });
-            fs.rmdirSync(hatch.get_path());
+            hatch = new libingester.Hatch("aacd", "en", { argv: ["--tgz", "/some/path"] });
         });
 
         it('does not blow up when no-tgz arg is at the end', function() {
             // Implicit non-exception
-            const hatch = new libingester.Hatch("abad", { argv: ["/blah", "--no-tgz"] });
-            fs.rmdirSync(hatch.get_path());
+            hatch = new libingester.Hatch("abad", "en", { argv: ["/blah", "--no-tgz"] });
         });
 
         it('does not blow up when no-tgz arg is at the end', function() {
             // Implicit non-exception
-            const hatch = new libingester.Hatch("abbd", { argv: ["/blah", "--no-tgz"] });
-            fs.rmdirSync(hatch.get_path());
+            hatch = new libingester.Hatch("abbd", "en", { argv: ["/blah", "--no-tgz"] });
         });
 
         it('does not skip tgz by default', function() {
-            const hatch = new libingester.Hatch("aaaa", { argv: ["/blah"] });
+            hatch = new libingester.Hatch("aaaa", "en", { argv: ["/blah"] });
             expect(hatch.is_exporting_tgz()).to.be.equal(true);
 
             return hatch.finish().then(() => {
-                console.log(`${hatch.get_path()}.tar.gz`);
                 expect(fs.existsSync(`${hatch.get_path()}.tar.gz`)).to.be.equal(true);
 
                 fs.unlinkSync(`${hatch.get_path()}/hatch_manifest.json`);
-                fs.rmdirSync(hatch.get_path());
+                fs.unlinkSync(`${hatch.get_path()}.tar.gz`);
             });
         });
 
         it('skip tgz if flag set', function() {
-            const hatch = new libingester.Hatch("abce", { argv: ["/blah", "--no-tgz"] });
+            hatch = new libingester.Hatch("abce", "en", { argv: ["/blah", "--no-tgz"] });
             expect(hatch.is_exporting_tgz()).to.be.equal(false);
 
             return hatch.finish().then(() => {
                 expect(fs.existsSync(`${hatch.get_path()}.tar.gz`)).to.be.equal(false);
 
                 fs.unlinkSync(`${hatch.get_path()}/hatch_manifest.json`);
-                fs.rmdirSync(hatch.get_path());
             });
         });
     });
@@ -69,22 +90,17 @@ describe('Hatch', function() {
     describe('argv path option', function() {
         it('does not blow up when path arg is not there', function() {
             // Implicit non-exception
-            const hatch = new libingester.Hatch("abcd", { argv: ["--foo", "/some/path"] });
-            fs.rmdirSync(hatch.get_path());
+            hatch = new libingester.Hatch("abcd", "en", { argv: ["--foo", "/some/path"] });
         });
 
         it('can process path correctly from passed in argv', function() {
-            const hatch = new libingester.Hatch("abcd", { argv: ["--path", "./hatch_foo"] });
+            hatch = new libingester.Hatch("abcd", "en", { argv: ["--path", "./hatch_foo"] });
             expect(hatch.get_path()).to.equal("./hatch_foo");
-
-            fs.rmdirSync(hatch.get_path());
         });
 
         it('does not break if invalid arg position', function() {
-            const hatch = new libingester.Hatch("abcd", { argv: ["foo", "--path"] });
+            hatch = new libingester.Hatch("abcd", "en", { argv: ["foo", "--path"] });
             expect(hatch.get_path()).to.match(/hatch_abcd_[0-9_]+/);
-
-            fs.rmdirSync(hatch.get_path());
         });
 
         it('creates the directory path if missing', function() {
@@ -95,10 +111,8 @@ describe('Hatch', function() {
 
             expect(fs.existsSync(targetDir)).to.be.equal(false);
 
-            const hatch = new libingester.Hatch("abcd", { argv: ["--path", targetDir] });
+            hatch = new libingester.Hatch("abcd", "en", { argv: ["--path", targetDir] });
             expect(fs.lstatSync(targetDir).isDirectory()).to.be.equal(true);
-
-            fs.rmdirSync(targetDir);
         });
 
         it('does not break if directory is already there', function() {
@@ -110,9 +124,7 @@ describe('Hatch', function() {
 
             expect(fs.lstatSync(targetDir).isDirectory()).to.be.equal(true);
 
-            const hatch = new libingester.Hatch("abcd", { argv: ["--path", targetDir] });
-
-            fs.rmdirSync(targetDir);
+            hatch = new libingester.Hatch("abcd", "en", { argv: ["--path", targetDir] });
         });
     });
 });
