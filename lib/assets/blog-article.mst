@@ -5,9 +5,9 @@
 </head>
 
 <body>
-<header class="extra-header">
-    <div class="categories" id="categories-links"></div>
-    <div class="extra-header-right">
+<header class="article-information">
+    <div class="article-categories" id="article-categories"></div>
+    <div class="article-support-info">
         <span class="author">{{ author }}</span>
         &mdash;
         <span class="date-published" id="published-id"></span>
@@ -49,7 +49,7 @@
                 .map(set => '<a class="eos-show-link" href="' + set.id + '">' + set.title + '</a>')
                 .join(separator);
         }
-        links_helper('categories-links', true, ', ');
+        links_helper('article-categories', true, ', ');
         links_helper('tags-links', false, ' ');
 
         let published_date = new Date(metadata.published);
