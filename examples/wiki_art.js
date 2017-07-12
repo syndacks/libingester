@@ -30,21 +30,26 @@ function ingest_art(hatch, artwork_metadata) {
 
         asset.set_last_modified_date(new Date());
 
-        if ($profile){
-          const body = $profile('div.info div.info-line').nextAll().map(function(){
-            return $profile(this);
-          }).get().join(' ');
 
-          const tags = $profile('span[itemprop=keywords] a').map((i, elem) => $profile(elem).text()).get();
-          asset.set_body(body);
-          asset.set_tags(tags);
+        const body = $profile('.info').first();
+        // remove elements
+        body.find('h1').remove();
+        body.find('a.artist-name').remove();
+        body.find('div.arrow-container').remove();
+        body.find('sub').remove();
+        body.find('li.advListItem').remove();
+        body.find('#thumbnails_container').remove();
+        body.find('ul.social-container-flat').remove();
 
-        } else {
-          asset.set_body('');
-          asset.set_tags(['wiki_art']);
-        }
+        const intro_paragraph = $profile('span[itemprop="description"]').text();
 
-        //ensure cheerio value
+        body.append('<div class="intro-paragraph">' + intro_paragraph +
+          '</div class="intro_paragraph">' || '');
+        asset.set_body(body);
+
+
+        const tags = $profile('span[itemprop=keywords] a').map((i, elem) => $profile(elem).text()).get();
+        asset.set_tags(tags);
         asset.set_read_more_text('www.wikiart.org');
 
         // image
