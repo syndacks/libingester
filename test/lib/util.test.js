@@ -93,6 +93,7 @@ describe('download_img', function() {
             const imageLink = $doc('a');
             expect(imageLink.length).to.equal(1);
             expect(imageLink.attr('data-soma-widget')).to.equal('ImageLink');
+            expect($image.attr('data-soma-hint')).to.equal('ImportantImage');
             expect(imageLink.find('img').length).to.equal(1);
         });
     });
