@@ -183,9 +183,10 @@ describe('get_embedded_video_asset', () => {
         expect(videoAsset).to.be.instanceOf(libingester.VideoAsset);
 
         expect($('iframe').length).to.equal(0);
-        expect($('video > source').length).to.equal(2);
+        const videoLinkSelector = 'img < a[data-soma-widget="VideoLink"].media-link.video';
+        expect($(videoLinkSelector).length).to.equal(2);
 
-        const video_job_ids = $('video').map((i, v) => v.attribs['data-libingester-asset-id']).get();
+        const video_job_ids = $(videoLinkSelector).map((i, v) => v.attribs['data-libingester-asset-id']).get();
         expect(video_job_ids).to.deep.equal([iframeAsset.asset_id, videoAsset.asset_id]);
     });
 });
