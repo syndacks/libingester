@@ -18,7 +18,7 @@
             <div class="inner-content-wrapper">
                 <div class="article-support">
                     <div class="author" id="author">{{ author }}</div>
-                    <div class="date-published" id="published-id"></div>
+                    <div class="date-published" id="published-id">{{ date_published }}</div>
                     <div class="read-more">
                         <a class="eos-show-link" href="{{ canonical_uri }}">{{ read_more_text }}</a>
                     </div>
@@ -49,19 +49,19 @@
     }
 
 // Change styling if some elements are empty
-let categories = document.getElementById('article-categories');
-if (categories != null) {
-    if (categories.children.length < 1) {
-        document.getElementById('article-title').className += ' no-margin-top';
-    }
-}
-
-let article_content = document.getElementById('article-content');
-if (article_content != null) {
-    if (article_content.children.length < 1) {
-        document.getElementById('article-title').className += ' less-margin-bottom';
-    }
-}
+// let categories = document.getElementById('article-categories');
+// if (categories != null) {
+//     if (categories.children.length < 1) {
+//         document.getElementById('article-title').className += ' no-margin-top';
+//     }
+// }
+//
+// let article_content = document.getElementById('article-content');
+// if (article_content != null) {
+//     if (article_content.children.length < 1) {
+//         document.getElementById('article-title').className += ' less-margin-bottom';
+//     }
+// }
 </script>
 </body>
 </html>
