@@ -30,6 +30,13 @@ function ingest_art(hatch, artwork_metadata) {
 
         asset.set_last_modified_date(new Date());
 
+        $profile('a').each(function () {
+          $profile(this).replaceWith($profile(this).html());
+        });
+
+        $profile('span').filter(function() {
+          return $profile(this).text().indexOf('Category:') > -1;
+        }).next().text();
 
         const body = $profile('.info').first();
         // remove elements
@@ -40,10 +47,13 @@ function ingest_art(hatch, artwork_metadata) {
         body.find('li.advListItem').remove();
         body.find('#thumbnails_container').remove();
         body.find('ul.social-container-flat').remove();
+        body.find('div.info-line.references').remove();
+
+
 
         const intro_paragraph = $profile('span[itemprop="description"]').text();
 
-        body.append('<div class="intro-paragraph">' + intro_paragraph +
+        body.append('<br/><div class="intro-paragraph">' + intro_paragraph +
           '</div class="intro_paragraph">' || '');
         asset.set_body(body);
 
