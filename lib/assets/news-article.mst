@@ -28,7 +28,7 @@
         <p class="lede">{{{lede}}}</p>
         {{#main_image}}
             <figure class="main">
-                <img data-libingester-asset-id="{{asset_id}}">
+                <img data-some-hint="ImportantImage" data-libingester-asset-id="{{asset_id}}">
                 {{{caption}}}
             </figure>
         {{/main_image}}
