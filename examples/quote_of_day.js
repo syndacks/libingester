@@ -1,71 +1,78 @@
 'use strict';
 
-const libingester = require('libingester');
-const mustache = require('mustache');
-const rp = require('request-promise');
-const template = require('./quote_of_day_template');
 const url = require('url');
+const libingester = require('libingester');
 
 const HOMEPAGE = 'http://www.thefreedictionary.com/_/archive.htm'; // Home section
 
-function ingestArticleProfile(hatch, uri) {
-    return libingester.util.fetch_html(uri).then(($profile) => {
-        const baseUri = libingester.util.get_doc_base_uri($profile, uri);
 
+function ingest_article(hatch, item) {
+    return libingester.util.fetch_html(item).then($ => {
         const asset = new libingester.NewsArticle();
-        asset.set_canonical_uri(uri);
 
         // Use 'url' module to pull out query string date object
-        const parts = url.parse(uri, true);
+        const parts = url.parse(item, true);
         const articleDate = parts.query.d;
         const modifiedDate = new Date(Date.parse(articleDate));
-        asset.set_last_modified_date(modifiedDate);
-
-        // Set title
-        const title = $profile('h1').first().text() + ": " + articleDate;
 
         // Pluck quoteAuthor
-        const quoteAuthor = $profile('table.widget', 'div#colleft').last().find('p').text();
-        asset.set_title(quoteAuthor);
+        const author = $('table.widget', 'div#colleft').last().find('p').text();
+        asset.set_authors(author);
 
         // Pluck quoteText
-        const quoteText = $profile('table.widget', 'div#colleft').last().find('span').text();
-        asset.set_synopsis(quoteText);
+        const quoteText = $('table.widget', 'div#colleft').last().find('span').text();
+        asset.set_title(quoteText);
 
-        const content = mustache.render(template.structure_template, {
-            title: title,
-            articleDate: articleDate,
+        // article settings
+        asset.set_canonical_uri(item);
+        asset.set_last_modified_date(modifiedDate);
+        asset.set_date_published(modifiedDate);
+        asset.set_source("TheFreeDictionary.com");
+        asset.set_section("quote_of_day");
+        asset.set_body(quoteText);
+        asset.set_custom_scss(`
+          $primary-light-color: #898989;
+          $primary-dark-color: #383838;
+          $accent-light-color: #FFB90C;
+          $accent-dark-color: #DB9003;
+          $background-light-color: #F0F0F0;
+          $background-dark-color: #EBEBEB;
+          $title-font: 'Signika Bold';
+          $body-font: 'Signika';
+          $context-font: 'Signika Medium';
+          $support-font: 'Signika Medium';
+          @import '_default';
+        `);
 
-            quoteText: quoteText,
-            quoteAuthor: quoteAuthor
-        });
+        // lede and read_more are set to empty strings to avoid errors
+        const lede = "";
+        asset.set_lede(lede);
 
-        // TODO: Convert to v2.0 API
-        asset.set_document(content);
-        asset.set_section("quote_of_the_day");
+        const read_more = "";
+        asset.set_read_more_link(read_more);
 
+        asset.render();
         hatch.save_asset(asset);
     })
     .catch(err => {
-        console.error(err.stack);
-        throw err;
+      console.log(err.stack);
+      throw err;
     });
 }
 
 function main() {
     const hatch = new libingester.Hatch('quote_of_day', 'en');
-    // make request to the index (home) page
     libingester.util.fetch_html(HOMEPAGE).then(($pages) => {
       // retrieve article URLs; '-2n+2' returns ~30 articles instead of 2,000+
-        const articles_links = $pages('#Calendar div:nth-child(-2n+2) a').map(function() {
+      //                        '-n+28' returns ~901 articles
+            const articles_links = $pages('#Calendar div:nth-child(-n + 28) a').map(function() {
             const uri = $pages(this).attr('href');
             return url.resolve(HOMEPAGE, uri);
         }).get();
 
-        Promise.all(articles_links.map((uri) => ingestArticleProfile(hatch, uri)))
-        .catch(err => console.log(err.stack)).then(() => {
+        Promise.all(articles_links.map((uri) => ingest_article(hatch, uri))).then(() => {
             return hatch.finish();
-        });
+        }).catch(console.log);
     });
 }
 
