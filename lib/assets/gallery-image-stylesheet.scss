@@ -158,15 +158,13 @@ h6 {
 
 .inner-content-wrapper {
     display: flex;
-    align-items: flex-start;
-    align-content: flex-start;
-    justify-content: space-between;
+    flex-direction: row;
 }
 
 .article-support {
     font-family: $support-font;
     font-size: 0.9rem;
-    min-width: 15vw;
+    width: 15vw;
     margin-right: 50px;
 }
 
