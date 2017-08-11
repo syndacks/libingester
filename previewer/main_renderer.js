@@ -71,6 +71,15 @@ $(document).ready(function(){
               )
         )
       )
+
+      // give a 'curent' class to clicked items the documentList
+      $('tr').on('click', function(){
+        $(this)
+        .addClass('current')
+        .siblings('.current')
+        .removeClass('current');
+      })
+
     } else {
       console.log("unknown objectType: " + asset)
     }
