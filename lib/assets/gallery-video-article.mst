@@ -54,17 +54,15 @@
 let categories = document.getElementById('article-categories');
 if (categories != null) {
     if (categories.children.length < 1) {
-        document.getElementById('article-title').className += ' no-margin-top';
+        document.getElementById('article-title').classList.add('no-margin-top');
     }
 }
 
 let article_content = document.getElementById('article-content');
-if (article_content != null) {
-    if (article_content.children.length < 1) {
-        document.getElementById('article-title').className += ' less-margin-bottom';
-        document.getElementById('article-support').className += ' width-full';
-        article_content.parentNode.removeChild(article_content);
-    }
+if (article_content && article_content.children.length < 1) {
+    document.getElementById('article-title').classList.add('less-margin-bottom');
+    document.getElementById('article-title').classList.add('width-full');
+    article_content.parentNode.removeChild(article_content);
 }
 </script>
 </body>
