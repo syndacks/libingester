@@ -164,8 +164,14 @@ h6 {
 .article-support {
     font-family: $support-font;
     font-size: 0.9rem;
-    width: 15vw;
+    width: 20vw;
     margin-right: 50px;
+
+    // If there is nothing in article-content, make article-support full width
+    &.width-full {
+        width: 100%;
+        margin-right: 0;
+    }
 }
 
 .article-content {

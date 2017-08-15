@@ -16,7 +16,7 @@
             <div class="article-categories" id="article-categories"></div>
             <h1 class="article-title" id="article-title">{{ title }}</h1>
             <div class="inner-content-wrapper">
-                <div class="article-support">
+                <div class="article-support" id="article-support">
                     <div class="author" id="author">{{ author }}</div>
                     <div class="date-published" id="published-id"></div>
                     <div class="read-more">
@@ -52,15 +52,15 @@
 let categories = document.getElementById('article-categories');
 if (categories != null) {
     if (categories.children.length < 1) {
-        document.getElementById('article-title').className += ' no-margin-top';
+        document.getElementById('article-title').classList.add('no-margin-top');
     }
 }
 
 let article_content = document.getElementById('article-content');
-if (article_content != null) {
-    if (article_content.children.length < 1) {
-        document.getElementById('article-title').className += ' less-margin-bottom';
-    }
+if (article_content && article_content.children.length < 1) {
+    document.getElementById('article-title').classList.add('less-margin-bottom');
+    document.getElementById('article-title').classList.add('width-full');
+    article_content.parentNode.removeChild(article_content);
 }
 </script>
 </body>
