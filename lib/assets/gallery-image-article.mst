@@ -59,7 +59,7 @@ if (categories != null) {
 let article_content = document.getElementById('article-content');
 if (article_content && article_content.children.length < 1) {
     document.getElementById('article-title').classList.add('less-margin-bottom');
-    document.getElementById('article-title').classList.add('width-full');
+    document.getElementById('article-support').classList.add('width-full');
     article_content.parentNode.removeChild(article_content);
 }
 </script>
