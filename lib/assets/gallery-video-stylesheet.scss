@@ -41,6 +41,7 @@ body {
     color: $black60;
     background-color: white;
     margin: 100px $backdrop-margin 600px;
+    min-width: 300px;
 }
 
 // Semantic elements
@@ -143,6 +144,20 @@ h6 {
 
 .main-image-wrapper {
     background-color: black;
+    position: relative;
+}
+
+.play-button-wrapper {
+    background-color: rgba(black, .6);
+    width: 50px;
+    height: 50px;
+    padding: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
 .outer-content-wrapper {
@@ -203,6 +218,12 @@ h6 {
 }
 
 @media (max-width: $compressed-max-width) {
+    .play-button-wrapper {
+        width: 40px;
+        height: 40px;
+        padding: 35px;
+    }
+
     .inner-content-wrapper {
         display: block;
     }
