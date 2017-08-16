@@ -1,6 +1,6 @@
 {
   "name": "libingester",
-  "version": "2.2.12",
+  "version": "2.2.13",
   "license": "UNLICENSED",
   "dependencies": {
     "aws-sdk": "^2.23.0",
@@ -13,6 +13,7 @@
     "jest": "^19.0.2",
     "jquery": "^3.2.1",
     "js-beautify": "^1.6.14",
+    "magic-number": "^0.1.5",
     "moment": "^2.18.1",
     "mustache": "^2.3.0",
     "node-sass": "^4.5.3",
@@ -23,7 +24,8 @@
     "request-promise": "^4.1.1",
     "tar.gz": "^1.0.5",
     "tether": "^1.4.0",
-    "thenify-all": "^1.6.0"
+    "thenify-all": "^1.6.0",
+    "validator": "^8.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
