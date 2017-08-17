@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <style>{{{stylesheet}}}</style>
+<head>
+</head>
+
+<body>
+    <h3>Word of the Day</h3>
+      <h4 id="word">{{ word }}</h4>
+      <p id="part_of_speech"> <i>{{ part_of_speech }}</i></p>
+      <p id="word_definition">Definition: {{ word_definition }}</p>
+  </section>
+</body>
+
+</html>
