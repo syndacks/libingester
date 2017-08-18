@@ -31,7 +31,7 @@ figure, blockquote, p, hr {
 }
 
 html {
-    background-color: $background-dark-color;
+    background-color: $background-light-color;
     font-family: $body-font;
     line-height: $body-line-height;
     overflow-x: hidden;  // So 100vw divs don't cause a horizontal scrollbar
