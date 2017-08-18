@@ -48,9 +48,11 @@
                 set.title + '</a>')
             .join(' | ');
 
-        let datePublishedField = document.getElementById('date-published');
-        let datePublished = new Date(metadata.published);
-        datePublishedField.innerHTML = datePublished.toLocaleDateString();
+        if (metadata.published) {
+            let datePublishedField = document.getElementById('date-published');
+            let datePublished = new Date(metadata.published);
+            datePublishedField.innerHTML = datePublished.toLocaleDateString();
+        }
     }
 </script>
 </body>

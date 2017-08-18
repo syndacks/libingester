@@ -1,6 +1,6 @@
 {
   "name": "libingester",
-  "version": "2.2.13",
+  "version": "2.2.15",
   "license": "UNLICENSED",
   "dependencies": {
     "aws-sdk": "^2.23.0",
@@ -8,12 +8,12 @@
     "cheerio": "^0.22.0",
     "electron": "^1.4.1",
     "feedparser": "^2.2.0",
+    "file-type": "^6.1.0",
     "fs-extra": "^2.0.0",
     "iconv": "^2.3.0",
     "jest": "^19.0.2",
     "jquery": "^3.2.1",
     "js-beautify": "^1.6.14",
-    "magic-number": "^0.1.5",
     "moment": "^2.18.1",
     "mustache": "^2.3.0",
     "node-sass": "^4.5.3",

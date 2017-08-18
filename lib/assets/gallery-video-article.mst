@@ -45,9 +45,11 @@
         links_helper('article-categories', true, ', ');
         links_helper('tags-links', false, ' ');
 
-        let published_date = new Date(metadata.published);
-        let published_elem = document.getElementById('published-id');
-        published_elem.innerHTML = published_date.toLocaleDateString();
+        if (metadata.published) {
+            let published_date = new Date(metadata.published);
+            let published_elem = document.getElementById('published-id');
+            published_elem.innerHTML = published_date.toLocaleDateString();
+        }
     }
 
 // Change styling if some elements are empty
