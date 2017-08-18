@@ -30,6 +30,10 @@ figure, blockquote, p, hr {
     -webkit-margin-end: 0;
 }
 
+.quote-decoration {
+    background-color: lime;
+}
+
 html {
     background-color: $background-dark-color;
     font-family: $body-font;
